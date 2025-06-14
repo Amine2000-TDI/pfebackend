@@ -2,10 +2,13 @@ package com.ezzahi.pfe_backend.models;
 
 import com.ezzahi.pfe_backend.models.enums.EtatCompte;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
+@Getter @Setter @EqualsAndHashCode
+@AllArgsConstructor @NoArgsConstructor @Builder
 @Entity
 public class AppUser {
     @Id
@@ -17,12 +20,17 @@ public class AppUser {
     private EtatCompte etat;
     private String password;
     private String photoUrl;
-    @ManyToMany(mappedBy = "appUsers")
+    private Date dateCreation;
+    @ManyToMany(fetch = FetchType.EAGER , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "UserRole",
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
     @OneToOne(mappedBy = "appUser")
     private Preference preference;
     @OneToMany(mappedBy = "appUser")
-    private List<Announcement> announcement;
+    private List<Announcement> announcement = new ArrayList<>();;
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<Candidacy> candidacies;
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
@@ -31,4 +39,9 @@ public class AppUser {
     private List<Reporting> reportsReceived;
     @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
     private ParticipatingContract participatingContract;
+
+    @Override
+    public String toString() {
+        return "User (id : " + id + ", username : " + username + ", email : " + email + ", etat : " + etat +", photoUrl : " + photoUrl+")";
+    }
 }

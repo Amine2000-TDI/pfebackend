@@ -2,10 +2,16 @@ package com.ezzahi.pfe_backend.models;
 
 import com.ezzahi.pfe_backend.models.enums.ParticipantType;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
-
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor @Builder
 @Entity
 public class ParticipatingContract {
     @Id

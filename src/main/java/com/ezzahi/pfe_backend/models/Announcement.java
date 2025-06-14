@@ -4,9 +4,16 @@ import com.ezzahi.pfe_backend.models.enums.AnnonceType;
 import com.ezzahi.pfe_backend.models.enums.TypeLogement;
 import com.ezzahi.pfe_backend.models.enums.Status;
 import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
-
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor @Builder
 @Entity
 public class Announcement {
     @Id
@@ -24,9 +31,12 @@ public class Announcement {
     private String description;
     private String adresse;
     private Double price;
+    private Date creationDate;
     @Enumerated(EnumType.STRING)
     private AnnonceType annonceType;
+    @Enumerated(EnumType.STRING)
     private TypeLogement typeLogement;
     private Integer nbrPerson;
+    @Enumerated(EnumType.STRING)
     private Status status;
 }
