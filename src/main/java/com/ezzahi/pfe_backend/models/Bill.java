@@ -5,6 +5,7 @@ import com.ezzahi.pfe_backend.models.enums.TypeOfCharge;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -23,7 +24,7 @@ public class Bill {
     @Enumerated(EnumType.STRING)
     private TypeOfCharge typeOfCharge;
     private Double amount;
-    private Date issueDate;
-    private Date payementDate;
+    private LocalDate issueDate;
+    private LocalDate payementDate;
     private BillStatus billStatus;
 }

@@ -7,8 +7,10 @@ import com.ezzahi.pfe_backend.models.Comment;
 import com.ezzahi.pfe_backend.models.enums.ApplicationStatus;
 import com.ezzahi.pfe_backend.repositories.AnnouncementRepositroy;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -18,9 +20,13 @@ import java.util.Date;
 @Builder
 public class CandidacyDto {
     private Long id;
+    @NotNull(message = "L'annonce est obligatoire")
     private Long announcementId;
+    @NotNull(message = "L'utilisateur est obligatoire")
     private Long appUserId;
-    private Date applicationDate;
+    //couche service
+    private LocalDate applicationDate;
+    //couche service
     private ApplicationStatus status;
 
 

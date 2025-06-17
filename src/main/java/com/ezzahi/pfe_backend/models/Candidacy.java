@@ -4,6 +4,7 @@ import com.ezzahi.pfe_backend.models.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -22,5 +23,5 @@ public class Candidacy {
     private AppUser appUser;
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
-    private Date applicationDate;
+    private LocalDate applicationDate;
 }

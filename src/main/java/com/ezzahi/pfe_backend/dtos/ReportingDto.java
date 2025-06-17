@@ -4,8 +4,13 @@ import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.Reporting;
 import com.ezzahi.pfe_backend.models.enums.ReportingStatus;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -16,11 +21,17 @@ import java.util.Date;
 @Builder
 public class ReportingDto {
     private long id;
+    @NotNull(message = "L'auteur est requis")
     private Long authorId;
+    @NotNull(message = "La cible est requise")
     private Long targetId;
+    @NotBlank(message = "La description ne peut pas être vide")
+    @Size(min = 2, max = 350, message = "La description doit contenir entre 2 et 350 caractères")
     private String description;
+    @NotNull(message = "Le statut est requis")
     private ReportingStatus status;
-    private Date reportingDate;
+    //dans la couche service on va initilaiser la date
+    private LocalDate reportingDate;
 
     public static ReportingDto toDto(Reporting reporting) {
         return ReportingDto.builder()

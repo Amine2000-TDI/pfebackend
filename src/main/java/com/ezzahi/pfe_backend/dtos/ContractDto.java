@@ -6,8 +6,13 @@ import com.ezzahi.pfe_backend.models.Contract;
 import com.ezzahi.pfe_backend.models.ParticipatingContract;
 import com.ezzahi.pfe_backend.repositories.AnnouncementRepositroy;
 import com.ezzahi.pfe_backend.repositories.ParticipatingContractRepository;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +25,16 @@ import java.util.stream.Collectors;
 @Builder
 public class ContractDto {
     private Long id;
+    @NotNull(message = "L'annonce est obligatoire")
     private Long announcementId ;
-    private List<Long> participatingContractsId;
-    private Date startDate;
-    private Date endDate;
+    @NotEmpty(message = "La liste des participants ne peut pas être vide")
+    private List<@NotNull(message = "L'id du participant ne peut pas être nul") Long> participatingContractsId;
+    @NotNull(message = "La date de début est obligatoire")
+    //@FutureOrPresent(message = "La date de début doit être aujourd'hui ou dans le futur")
+    // ****la date est en future tu dois la gérer en service
+    private LocalDate startDate;
+    @NotNull(message = "La date de fin est obligatoire")
+    private LocalDate endDate;
 
     public static ContractDto toDto(Contract contract) {
         return ContractDto.builder()

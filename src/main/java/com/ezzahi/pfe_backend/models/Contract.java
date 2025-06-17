@@ -3,6 +3,7 @@ package com.ezzahi.pfe_backend.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -22,7 +23,7 @@ public class Contract {
     private List<ParticipatingContract> participatingContracts;
     @OneToMany(mappedBy = "contract")
     private List<Comment> comments;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
 }

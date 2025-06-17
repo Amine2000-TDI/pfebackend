@@ -16,6 +16,7 @@ public class Preference {
     private Long id;
     @OneToOne
     private AppUser appUser;
+    private String description;
     private Boolean smoker;
     private Boolean dogLover;
     private Boolean catLover;
@@ -24,5 +25,5 @@ public class Preference {
     private Boolean arabic;
     private Boolean french;
     private Boolean english;
-    private Boolean spanich;
+    private Boolean spanish;
 }

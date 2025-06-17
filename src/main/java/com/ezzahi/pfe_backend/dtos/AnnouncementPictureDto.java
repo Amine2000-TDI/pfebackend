@@ -3,7 +3,8 @@ package com.ezzahi.pfe_backend.dtos;
 import com.ezzahi.pfe_backend.models.Announcement;
 import com.ezzahi.pfe_backend.models.AnnouncementPicture;
 import com.ezzahi.pfe_backend.repositories.AnnouncementRepositroy;
-import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -14,7 +15,9 @@ import lombok.*;
 @Builder
 public class AnnouncementPictureDto {
     private Long id;
+    @NotNull(message = "L'annonce est obligatoire")
     private Long announcementId;
+    @NotBlank(message = "L'URL de l'image est obligatoire")
     private String url;
     public static AnnouncementPictureDto toDto(AnnouncementPicture announcementPicture) {
         return AnnouncementPictureDto.builder()

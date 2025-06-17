@@ -6,6 +6,7 @@ import com.ezzahi.pfe_backend.models.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -31,7 +32,7 @@ public class Announcement {
     private String description;
     private String adresse;
     private Double price;
-    private Date creationDate;
+    private LocalDate creationDate;
     @Enumerated(EnumType.STRING)
     private AnnonceType annonceType;
     @Enumerated(EnumType.STRING)

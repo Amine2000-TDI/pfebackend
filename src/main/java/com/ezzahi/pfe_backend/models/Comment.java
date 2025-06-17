@@ -3,6 +3,7 @@ package com.ezzahi.pfe_backend.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -22,6 +23,6 @@ public class Comment {
     @OneToOne
     private AppUser target;
     private String comment;
-    private Date creationDate;
-    private Date modificationDate;
+    private LocalDate creationDate;
+    private LocalDate modificationDate;
 }

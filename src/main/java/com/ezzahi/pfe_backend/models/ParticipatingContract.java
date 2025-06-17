@@ -4,6 +4,7 @@ import com.ezzahi.pfe_backend.models.enums.ParticipantType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -21,10 +22,10 @@ public class ParticipatingContract {
     private AppUser appUser;
     @ManyToOne
     private Contract contract;
-    @OneToMany(mappedBy = "ParticipatingContract", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "participatingContract", cascade = CascadeType.ALL)
     private List<Bill> bills;
     @Enumerated(EnumType.STRING)
     private ParticipantType participantType;
-    private Date entryDate;
-    private Date exitDate;
+    private LocalDate entryDate;
+    private LocalDate exitDate;
 }

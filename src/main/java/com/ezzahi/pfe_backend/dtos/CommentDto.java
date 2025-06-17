@@ -6,8 +6,12 @@ import com.ezzahi.pfe_backend.models.Contract;
 import com.ezzahi.pfe_backend.models.Reporting;
 import com.ezzahi.pfe_backend.models.enums.ReportingStatus;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -18,12 +22,19 @@ import java.util.Date;
 @Builder
 public class CommentDto {
     private long id;
+    @NotNull(message = "L'auteur est requis")
     private Long authorId;
+    @NotNull(message = "La cible est requise")
     private Long targetId;
+    @NotNull(message = "Le contrat est obligatoire")
     private Contract contract;
+    @NotBlank(message = "Le commentaire  ne peut pas être vide")
+    @Size(min = 2, max = 350, message = "Le commentaire doit contenir entre 2 et 350 caractères")
     private String comment;
-    private Date creationDate;
-    private Date modificationDate;
+    //couche service
+    private LocalDate creationDate;
+    //couche service
+    private LocalDate modificationDate;
 
     public static CommentDto toDto(Comment comment) {
         return CommentDto.builder()

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -19,8 +20,8 @@ public class UserDetail {
     @GeneratedValue
     private Long id;
     private String phone;
-    private Date birthday;
-    private Date dateVideoCall;
+    private LocalDate birthday;
+    private LocalDate dateVideoCall;
     @OneToOne
     private AppUser appUser;
 }
