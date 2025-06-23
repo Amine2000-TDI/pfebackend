@@ -25,6 +25,6 @@ public class Bill {
     private TypeOfCharge typeOfCharge;
     private Double amount;
     private LocalDate issueDate;
-    private LocalDate payementDate;
+    private LocalDate paymentDate;
     private BillStatus billStatus;
 }

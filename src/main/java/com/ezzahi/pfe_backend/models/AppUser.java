@@ -27,17 +27,17 @@ public class AppUser {
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
-    @OneToOne(mappedBy = "appUser")
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Preference preference;
-    @OneToMany(mappedBy = "appUser")
-    private List<Announcement> announcement = new ArrayList<>();;
-    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY , orphanRemoval = true)
+    private List<Announcement> announcements = new ArrayList<>();
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY , orphanRemoval = true)
     private List<Candidacy> candidacies;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Reporting> reportsSent;
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Reporting> reportsReceived;
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL , orphanRemoval = true)
     private ParticipatingContract participatingContract;
 
     @Override

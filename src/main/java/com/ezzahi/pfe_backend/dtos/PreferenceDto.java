@@ -17,7 +17,7 @@ import lombok.*;
 public class PreferenceDto {
     private Long id;
     @NotNull(message = "L'utilisateur est obligatoire")
-    private Long userId;
+    private AppUserDto user;
     @NotBlank(message = "La description ne peut pas être vide")
     @Size(min = 2, max = 250, message = "La description doit contenir entre 2 et 250 caractères")
     private String description;
@@ -43,7 +43,7 @@ public class PreferenceDto {
     public static PreferenceDto toDto(Preference preference) {
         return PreferenceDto.builder()
                 .id(preference.getId())
-                .userId(preference.getAppUser().getId())
+                .user(AppUserDto.toDto(preference.getAppUser()))
                 .description(preference.getDescription())
                 .smoker(preference.getSmoker())
                 .dogLover(preference.getDogLover())
@@ -56,9 +56,7 @@ public class PreferenceDto {
                 .spanish(preference.getSpanish())
                 .build();
     }
-    public static Preference toEntity(PreferenceDto preferenceDto, AppUserRepository appUserRepository) {
-        AppUser appUser = appUserRepository.findById(preferenceDto.getUserId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + preferenceDto.getUserId()));
+    public static Preference toEntity(PreferenceDto preferenceDto, AppUser appUser) {
         return Preference.builder()
                 .id(preferenceDto.getId())
                 .appUser(appUser)

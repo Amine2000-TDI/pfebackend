@@ -3,7 +3,6 @@ package com.ezzahi.pfe_backend.dtos;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.Role;
 import com.ezzahi.pfe_backend.models.enums.EtatCompte;
-import com.ezzahi.pfe_backend.repositories.RoleRepository;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -29,7 +28,7 @@ public class AppUserDto {
     // Peut-être nul, donc pas besoin de validation
     private String photoUrl;
     @NotEmpty(message = "L'utilisateur doit avoir au moins un rôle")
-    private List<Long> roleId;
+    private List<RoleDto> roles;
 
 
     public static AppUserDto toDto(AppUser appUser) {
@@ -39,22 +38,18 @@ public class AppUserDto {
                 .email(appUser.getEmail())
                 .etat(appUser.getEtat())
                 .photoUrl(appUser.getPhotoUrl())
-                .roleId(appUser.getRoles().stream().map(Role::getId).collect(Collectors.toList()))
+                .roles(appUser.getRoles().stream().map(RoleDto::toDto).toList())
                 .build();
     }
 
-    public static AppUser toEntity(AppUserDto appUserDto, RoleRepository roleRepository) {
-        List<Role> roles = appUserDto.getRoleId().stream()
-                .map(roleId -> roleRepository.findById(roleId)
-                        .orElseThrow(()-> new RuntimeException("Role not found with id : "+roleId)))
-                .collect(Collectors.toList());
+    public static AppUser toEntity(AppUserDto appUserDto) {
         return AppUser.builder()
                 .id(appUserDto.getId())
                 .username(appUserDto.getUsername())
                 .email(appUserDto.getEmail())
                 .etat(appUserDto.getEtat())
                 .photoUrl(appUserDto.getPhotoUrl())
-                .roles(roles)
+                .roles(appUserDto.getRoles().stream().map(RoleDto::toEntity).toList())
                 .build();
     }
 }

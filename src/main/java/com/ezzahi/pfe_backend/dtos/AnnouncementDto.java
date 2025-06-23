@@ -1,6 +1,7 @@
 package com.ezzahi.pfe_backend.dtos;
 
 import com.ezzahi.pfe_backend.models.Announcement;
+import com.ezzahi.pfe_backend.models.AnnouncementPicture;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.enums.AnnonceType;
 import com.ezzahi.pfe_backend.models.enums.Status;
@@ -10,8 +11,10 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -22,7 +25,9 @@ import java.util.List;
 public class AnnouncementDto {
     private Long id;
     @NotNull(message = "L'utilisateur est obligatoire")
-    private Long appUserId;
+    private AppUserDto appUser;
+    @NotNull(message = "Les photos sont obligatoires")
+    private List<AnnouncementPictureDto> pictures;
     @NotBlank(message = "Le titre est obligatoire")
     @Size(min = 5, max = 100, message = "Le titre doit contenir entre 5 et 100 caractères")
     private String title;
@@ -47,9 +52,11 @@ public class AnnouncementDto {
     private Status status;
 
     public static AnnouncementDto toDto(Announcement announcement) {
+        List<AnnouncementPictureDto> pictures = announcement.getPictures().stream().map(AnnouncementPictureDto::toDto).toList();
         return AnnouncementDto.builder()
                 .id(announcement.getId())
-                .appUserId(announcement.getAppUser().getId())
+                .appUser(AppUserDto.toDto(announcement.getAppUser()))
+                .pictures(pictures)
                 .title(announcement.getTitle())
                 .description(announcement.getDescription())
                 .adresse(announcement.getAdresse())
@@ -61,10 +68,8 @@ public class AnnouncementDto {
                 .status(announcement.getStatus())
                 .build();
     }
-    public static Announcement toEntity(AnnouncementDto announcementDto, AppUserRepository appUserRepository) {
-        AppUser appUser = appUserRepository.findById(announcementDto.getAppUserId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + announcementDto.getAppUserId()));
-        return Announcement.builder()
+    public static Announcement toEntity(AnnouncementDto announcementDto, AppUser appUser) {
+        Announcement announcement = Announcement.builder()
                 .id(announcementDto.getId())
                 .appUser(appUser)
                 .title(announcementDto.getTitle())
@@ -77,6 +82,8 @@ public class AnnouncementDto {
                 .nbrPerson(announcementDto.getNbrPerson())
                 .status(announcementDto.getStatus())
                 .build();
-
+        List<AnnouncementPicture> pictures = announcementDto.getPictures().stream().map(o -> AnnouncementPictureDto.toEntity(o,announcement)).toList();
+        announcement.setPictures(pictures);
+        return announcement;
     }
 }

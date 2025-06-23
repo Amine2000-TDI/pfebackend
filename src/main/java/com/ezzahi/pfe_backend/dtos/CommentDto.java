@@ -23,11 +23,11 @@ import java.util.Date;
 public class CommentDto {
     private long id;
     @NotNull(message = "L'auteur est requis")
-    private Long authorId;
+    private AppUserDto author;
     @NotNull(message = "La cible est requise")
-    private Long targetId;
+    private AppUserDto target;
     @NotNull(message = "Le contrat est obligatoire")
-    private Contract contract;
+    private ContractDto contract;
     @NotBlank(message = "Le commentaire  ne peut pas être vide")
     @Size(min = 2, max = 350, message = "Le commentaire doit contenir entre 2 et 350 caractères")
     private String comment;
@@ -39,22 +39,19 @@ public class CommentDto {
     public static CommentDto toDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
-                .authorId(comment.getAuthor().getId())
-                .targetId(comment.getTarget().getId())
+                .author(AppUserDto.toDto(comment.getAuthor()))
+                .target(AppUserDto.toDto(comment.getTarget()))
                 .comment(comment.getComment())
+                .contract(ContractDto.toDto(comment.getContract()))
                 .creationDate(comment.getCreationDate())
                 .modificationDate(comment.getModificationDate())
                 .build();
     }
-    public static Comment toEntity(CommentDto commentDto, AppUserRepository appUserRepository) {
-        AppUser authorUser = appUserRepository.findById(commentDto.getAuthorId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + commentDto.getAuthorId()));
-        AppUser authorTarget = appUserRepository.findById(commentDto.getTargetId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + commentDto.getTargetId()));
+    public static Comment toEntity(CommentDto commentDto, AppUser author,AppUser target) {
         return Comment.builder()
                 .id(commentDto.getId())
-                .author(authorUser)
-                .target(authorTarget)
+                .author(author)
+                .target(target)
                 .comment(commentDto.getComment())
                 .creationDate(commentDto.getCreationDate())
                 .modificationDate(commentDto.getModificationDate())

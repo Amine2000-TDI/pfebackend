@@ -19,9 +19,9 @@ import java.util.Date;
 public class ParticipatingContractDto {
     private Long id;
     @NotNull(message = "L'utilisateur est obligatoire")
-    private Long appUserId;
+    private AppUserDto appUser;
     @NotNull(message = "Le contrat est obligatoire")
-    private Long contractId;
+    private ContractDto contract;
     @NotNull(message = "Le type de participant est obligatoire")
     private ParticipantType participantType;
     @NotNull(message = "La date d'entrée est obligatoire")
@@ -32,18 +32,14 @@ public class ParticipatingContractDto {
     public static ParticipatingContractDto toDto(ParticipatingContract participatingContract) {
         return ParticipatingContractDto.builder()
                 .id(participatingContract.getId())
-                .appUserId(participatingContract.getAppUser().getId())
-                .contractId(participatingContract.getContract().getId())
+                .appUser(AppUserDto.toDto(participatingContract.getAppUser()))
+                .contract(ContractDto.toDto(participatingContract.getContract()))
                 .participantType(participatingContract.getParticipantType())
                 .entryDate(participatingContract.getEntryDate())
                 .exitDate(participatingContract.getExitDate())
                 .build();
     }
-    public static ParticipatingContract toEntity(ParticipatingContractDto participatingContractDto, AppUserRepository appUserRepository, ContractRepository contractRepository) {
-        AppUser appUser = appUserRepository.findById(participatingContractDto.appUserId)
-                .orElseThrow(()-> new RuntimeException("User not found with id " + participatingContractDto.appUserId));
-        Contract contract = contractRepository.findById(participatingContractDto.contractId)
-                .orElseThrow(()-> new RuntimeException("Contract not found with id " + participatingContractDto.contractId));
+    public static ParticipatingContract toEntity(ParticipatingContractDto participatingContractDto, AppUser appUser, Contract contract) {
         return ParticipatingContract.builder()
                 .id(participatingContractDto.getId())
                 .appUser(appUser)

@@ -22,36 +22,32 @@ import java.util.Date;
 public class ReportingDto {
     private long id;
     @NotNull(message = "L'auteur est requis")
-    private Long authorId;
+    private AppUserDto author;
     @NotNull(message = "La cible est requise")
-    private Long targetId;
+    private AppUserDto target;
     @NotBlank(message = "La description ne peut pas être vide")
     @Size(min = 2, max = 350, message = "La description doit contenir entre 2 et 350 caractères")
     private String description;
     @NotNull(message = "Le statut est requis")
     private ReportingStatus status;
-    //dans la couche service on va initilaiser la date
+    //dans la couche service, on va initialiser la date
     private LocalDate reportingDate;
 
     public static ReportingDto toDto(Reporting reporting) {
         return ReportingDto.builder()
                 .id(reporting.getId())
-                .authorId(reporting.getAuthor().getId())
-                .targetId(reporting.getTarget().getId())
+                .author(AppUserDto.toDto(reporting.getAuthor()))
+                .target(AppUserDto.toDto(reporting.getTarget()))
                 .description(reporting.getDescription())
                 .status(reporting.getStatus())
                 .reportingDate(reporting.getReportingDate())
                 .build();
     }
-    public static Reporting toEntity(ReportingDto reportingDto, AppUserRepository appUserRepository) {
-        AppUser authorUser = appUserRepository.findById(reportingDto.getAuthorId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + reportingDto.getAuthorId()));
-        AppUser authorTarget = appUserRepository.findById(reportingDto.getTargetId())
-                .orElseThrow(()-> new RuntimeException("User not found with id +" + reportingDto.getTargetId()));
+    public static Reporting toEntity(ReportingDto reportingDto, AppUser author, AppUserDto target) {
         return Reporting.builder()
                 .id(reportingDto.getId())
-                .author(authorUser)
-                .target(authorTarget)
+                .author(author)
+                .target(author)
                 .description(reportingDto.getDescription())
                 .status(reportingDto.getStatus())
                 .reportingDate(reportingDto.getReportingDate())

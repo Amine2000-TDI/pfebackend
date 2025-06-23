@@ -7,7 +7,6 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 @Getter
 @Setter
 @ToString
@@ -26,7 +25,7 @@ public class UserDetailDto {
     private LocalDate birthday;
     private LocalDate dateVideoCall;
     @NotNull(message = "L'identifiant de l'utilisateur est obligatoire.")
-    private Long appUserId;
+    private AppUserDto appUser;
 
     public static UserDetailDto toDto(UserDetail userDetail) {
         return UserDetailDto.builder()
@@ -34,12 +33,10 @@ public class UserDetailDto {
                 .phone(userDetail.getPhone())
                 .birthday(userDetail.getBirthday())
                 .dateVideoCall(userDetail.getDateVideoCall())
-                .appUserId(userDetail.getAppUser().getId())
+                .appUser(AppUserDto.toDto(userDetail.getAppUser()))
                 .build();
     }
-    public static UserDetail toEntity(UserDetailDto userDetailDto, AppUserRepository appUserRepository) {
-        AppUser appUser = appUserRepository.findById(userDetailDto.appUserId)
-            .orElseThrow(()-> new RuntimeException("User not found with id " + userDetailDto.appUserId));
+    public static UserDetail toEntity(UserDetailDto userDetailDto, AppUser appUser) {
         return UserDetail.builder()
                 .id(userDetailDto.getId())
                 .phone(userDetailDto.getPhone())

@@ -22,9 +22,9 @@ public class Announcement {
     private Long id;
     @ManyToOne
     private AppUser appUser;
-    @OneToMany(mappedBy = "announcement", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "announcement", fetch = FetchType.EAGER, cascade = CascadeType.ALL , orphanRemoval = true)
     private List<AnnouncementPicture> pictures;
-    @OneToMany(mappedBy = "announcement", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "announcement", fetch = FetchType.EAGER, cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Candidacy> candidacies;
     @OneToOne(mappedBy = "announcement")
     private Contract contract;

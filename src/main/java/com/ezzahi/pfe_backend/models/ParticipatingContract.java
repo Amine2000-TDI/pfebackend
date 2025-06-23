@@ -22,7 +22,7 @@ public class ParticipatingContract {
     private AppUser appUser;
     @ManyToOne
     private Contract contract;
-    @OneToMany(mappedBy = "participatingContract", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "participatingContract", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Bill> bills;
     @Enumerated(EnumType.STRING)
     private ParticipantType participantType;
