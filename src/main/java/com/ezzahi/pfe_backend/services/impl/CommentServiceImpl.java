@@ -66,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     }
 //*********************************************************************************
     public List<CommentDto> getCommentsByTargetUser(Long userId) {
-        return commentRepository.findByTargetUserId(userId).stream()
+        return commentRepository.findByTarget_Id(userId).stream()
                 .map(CommentDto::toDto)
                 .toList();
     }

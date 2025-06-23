@@ -25,7 +25,6 @@ import java.util.List;
 public class AnnouncementServiceImpl implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final AppUserService appUserService;
     private final ObjectValidators<AnnouncementDto> validators;
     private final AppUserRepository appUserRepository;
 
@@ -38,7 +37,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         if(dto.getCreationDate() == null){
             dto.setCreationDate(LocalDate.now());
         }
-        AppUser appUser = AppUserDto.toEntity(appUserService.getById(dto.getAppUser().getId()));
+        AppUser appUser = appUserRepository.findById(dto.getAppUser().getId())
+                .orElseThrow(() -> new NotFoundException("AppUser not found", "Candidacy save"));
+
+
         final Announcement announcement = AnnouncementDto.toEntity(dto,appUser);
         announcement.getPictures().forEach( p -> p.setAnnouncement(announcement));
         Announcement savedAnnouncement = announcementRepository.save(AnnouncementDto.toEntity(dto,appUser));
@@ -50,11 +52,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         //find announce
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("An announcement with id " + id + " not found.","Announcement"));
-        // delete announcement from user
-        AppUser appUser = AppUserDto.toEntity(appUserService.getById(announcement.getAppUser().getId()));
-        appUser.getAnnouncements().remove(announcement);
-        appUserRepository.save(appUser);
-        //delete announce, because cascade type is all she will delete pictures also
         announcementRepository.delete(announcement);
     }
 

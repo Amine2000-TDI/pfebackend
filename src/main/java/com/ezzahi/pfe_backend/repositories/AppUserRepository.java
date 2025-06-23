@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface AppUserRepository extends JpaRepository<AppUser,Long> {
 
-    List<AppUser> findByRoleLibelle(String libelle);
-
     // Trouver un utilisateur par son email (utile pour l'authentification ou vérification)
     Optional<AppUser> findByEmail(String email);
 
@@ -29,5 +27,4 @@ public interface AppUserRepository extends JpaRepository<AppUser,Long> {
     // Compter le nombre d’utilisateurs par rôle (utile pour stats)
     long countByRolesLibelle(String libelle);
 
-    List<AppUser> findAppUsersByRoleLibelle(String roleName);
 }

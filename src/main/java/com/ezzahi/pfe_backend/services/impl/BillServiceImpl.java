@@ -35,7 +35,7 @@ public class BillServiceImpl implements BillService {
             throw new IllegalArgumentException("La date de paiement ne peut pas être dans le futur.");
         }
         ParticipatingContract participatingContract = participatingContractRepository.findById(dto.getParticipatingContract().getId())
-                .orElseThrow(()-> new NotFoundException("ParticipatingContract not foud with id : "+dto.getParticipatingContract().getId(),"Bill save"));
+                .orElseThrow(()-> new NotFoundException("ParticipatingContract not found with id : "+dto.getParticipatingContract().getId(),"Bill save"));
         Bill bill = BillDto.toEntity(dto,participatingContract);
         return BillDto.toDto(billRepository.save(bill));
     }
@@ -77,7 +77,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<BillDto> getUnpaidBillsByUser(Long userId) {
-        return billRepository.findByParticipatingContract_AppUser_IdAndIsPaidFalse(userId)
+        return billRepository.findByUserIdAndStatuses(userId,List.of(BillStatus.NO_PAY, BillStatus.LATE))
                 .stream().map(BillDto::toDto).toList();
     }
 

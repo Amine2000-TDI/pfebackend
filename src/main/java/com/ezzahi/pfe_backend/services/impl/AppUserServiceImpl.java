@@ -83,7 +83,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public List<AppUserDto> getUsersByRole(String roleName) {
-        return appUserRepository.findAppUsersByRoleLibelle(roleName).stream()
+        return appUserRepository.findByRolesLibelle(roleName).stream()
                 .map(AppUserDto::toDto)
                 .toList();
     }

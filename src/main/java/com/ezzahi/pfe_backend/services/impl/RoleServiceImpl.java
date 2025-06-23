@@ -39,7 +39,7 @@ public class RoleServiceImpl implements RoleService {
     public void delete(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Role not found with id: " + id,"Role"));
-        List<AppUser> listAppUsers = appUserRepository.findByRoleLibelle(role.getLibelle());
+        List<AppUser> listAppUsers = appUserRepository.findByRolesLibelle(role.getLibelle());
         if(!listAppUsers.isEmpty()) {
             for (AppUser appUser : listAppUsers) {
                 appUser.getRoles().remove(role);
