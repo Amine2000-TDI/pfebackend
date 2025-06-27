@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 @RequiredArgsConstructor
+@Getter
 public class ObjectValidationException extends RuntimeException {
-    @Getter
     private final Set<String> violations;
-    @Getter
     private final String violationSource;
+
+    @Override
+    public String getMessage() {
+        return "Validation failed in " + violationSource + " with violations: " + violations;
+    }
 
 }

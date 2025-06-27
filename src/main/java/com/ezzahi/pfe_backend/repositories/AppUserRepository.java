@@ -3,6 +3,7 @@ package com.ezzahi.pfe_backend.repositories;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.enums.EtatCompte;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public interface AppUserRepository extends JpaRepository<AppUser,Long> {
     List<AppUser> findByEtat(EtatCompte etat);
 
     // Lister tous les utilisateurs ayant un rôle spécifique (par libellé)
+    //@Query("SELECT u FROM AppUser u JOIN Role r WHERE u.roles = :libelle")
     List<AppUser> findByRolesLibelle(String libelle);
 
     // Vérifier l'existence d'un utilisateur par email (utile pour signup)

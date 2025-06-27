@@ -2,6 +2,7 @@ package com.ezzahi.pfe_backend.dtos;
 
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.UserDetail;
+import com.ezzahi.pfe_backend.models.enums.Gender;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -26,6 +27,9 @@ public class UserDetailDto {
     private LocalDate dateVideoCall;
     @NotNull(message = "L'identifiant de l'utilisateur est obligatoire.")
     private AppUserDto appUser;
+    @NotNull(message = "Le gender" +
+            " de l'utilisateur est obligatoire.")
+    private Gender gender;
 
     public static UserDetailDto toDto(UserDetail userDetail) {
         return UserDetailDto.builder()
@@ -34,6 +38,7 @@ public class UserDetailDto {
                 .birthday(userDetail.getBirthday())
                 .dateVideoCall(userDetail.getDateVideoCall())
                 .appUser(AppUserDto.toDto(userDetail.getAppUser()))
+                .gender(userDetail.getGender())
                 .build();
     }
     public static UserDetail toEntity(UserDetailDto userDetailDto, AppUser appUser) {
@@ -42,6 +47,7 @@ public class UserDetailDto {
                 .phone(userDetailDto.getPhone())
                 .birthday(userDetailDto.getBirthday())
                 .dateVideoCall(userDetailDto.getDateVideoCall())
+                .gender(userDetailDto.getGender())
                 .appUser(appUser)
                 .build();
     }

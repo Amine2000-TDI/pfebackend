@@ -4,6 +4,7 @@ import com.ezzahi.pfe_backend.models.enums.EtatCompte;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,7 @@ public class AppUser {
     private EtatCompte etat;
     private String password;
     private String photoUrl;
-    private Date dateCreation;
+    private LocalDate dateCreation;
     @ManyToMany(fetch = FetchType.EAGER , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "UserRole",

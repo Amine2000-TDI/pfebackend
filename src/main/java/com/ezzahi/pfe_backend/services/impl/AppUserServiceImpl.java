@@ -2,18 +2,23 @@ package com.ezzahi.pfe_backend.services.impl;
 
 import com.ezzahi.pfe_backend.dtos.AppUserDto;
 import com.ezzahi.pfe_backend.exceptions.NotFoundException;
+import com.ezzahi.pfe_backend.exceptions.OperationNonPermittedException;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.Role;
+import com.ezzahi.pfe_backend.models.UserDetail;
 import com.ezzahi.pfe_backend.models.enums.EtatCompte;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
 import com.ezzahi.pfe_backend.repositories.RoleRepository;
+import com.ezzahi.pfe_backend.repositories.UserDetailRepository;
 import com.ezzahi.pfe_backend.services.AppUserService;
 import com.ezzahi.pfe_backend.validators.ObjectValidators;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +28,31 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository appUserRepository;
     private final RoleRepository roleRepository;
     private final ObjectValidators<AppUserDto> validator;
+    private final UserDetailRepository userDetailRepository;
 
     @Override
     public AppUserDto save(AppUserDto dto) {
         validator.validate(dto);
+        AppUser user;
+        if(dto.getId() == null) {
+            user = appUserRepository.findByEmail(dto.getEmail()).stream().findAny().orElse(null);
+            if(user != null) {
+                throw new OperationNonPermittedException("The mail already existe","save","AppUser");
+            }
+            dto.setDateCreation(LocalDate.now());
+            dto.setEtat(EtatCompte.AWAITING_VALIDATION);
+        }else{
+            user = appUserRepository.findById(dto.getId())
+                    .orElseThrow(() -> new NotFoundException("User not found with id : " + dto.getId(), "AppUser"));
+            dto.setDateCreation(user.getDateCreation());
+            dto.setEtat(user.getEtat());
+        }
         List<Role> roles = dto.getRoles().stream()
                 .map(roleDto -> roleRepository.findBylibelle(roleDto.getLibelle())
-                        .orElseThrow(() -> new NotFoundException("Rôle non trouvé: " + roleDto.getLibelle(), "AppUser save")))
+                        .orElseThrow(() -> new NotFoundException("Role not found with libelle : " + roleDto.getLibelle(), "AppUser save")))
                 .toList();
 
-        AppUser user = AppUserDto.toEntity(dto);
+        user = AppUserDto.toEntity(dto);
         user.setRoles(roles);
         return AppUserDto.toDto(appUserRepository.save(user));
     }
@@ -41,7 +61,7 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDto getById(Long id) {
         return appUserRepository.findById(id)
                 .map(AppUserDto::toDto)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec l'ID: " + id, "AppUser"));
+                .orElseThrow(() -> new NotFoundException("User not found with id : " + id, "AppUser getById"));
     }
 
     @Override
@@ -51,8 +71,10 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public void delete(Long id) {
+       Optional<UserDetail> userDetail = userDetailRepository.findByAppUserId(id);
         AppUser user = appUserRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec l'ID: " + id, "AppUser"));
+                .orElseThrow(() -> new NotFoundException("User not found with id : " + id, "AppUser delete"));
+        userDetail.ifPresent(userDetailRepository::delete);
         appUserRepository.delete(user);
     }
 
@@ -91,7 +113,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUserDto changeEtat(Long id, EtatCompte etat) {
         AppUser user = appUserRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé", "AppUser changeEtat"));
+                .orElseThrow(() -> new NotFoundException("User not found with id : "+id, "AppUser changeEtat"));
         user.setEtat(etat);
         return AppUserDto.toDto(appUserRepository.save(user));
     }

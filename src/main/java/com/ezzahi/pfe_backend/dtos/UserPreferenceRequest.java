@@ -1,21 +1,18 @@
-package com.ezzahi.pfe_backend.models;
+package com.ezzahi.pfe_backend.dtos;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
+@Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor @Builder
-@Entity
-public class Preference {
-    @Id
-    @GeneratedValue
+public class UserPreferenceRequest {
     private Long id;
-    @OneToOne
-    private AppUser appUser;
+    private Long user_id;
     private String description;
     private Boolean smoker;
     private Boolean dogLover;

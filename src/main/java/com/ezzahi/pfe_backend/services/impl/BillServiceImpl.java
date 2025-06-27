@@ -63,6 +63,7 @@ public class BillServiceImpl implements BillService {
     }
     //*********************************************************************************
 
+
     @Override
     public List<BillDto> getByUserId(Long userId) {
         return billRepository.findByParticipatingContract_AppUser_Id(userId)

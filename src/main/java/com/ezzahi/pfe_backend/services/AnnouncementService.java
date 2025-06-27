@@ -11,4 +11,6 @@ public interface AnnouncementService extends Crudservice<Announcement, Announcem
     List<AnnouncementDto> getByStatus(Status status);
     List<AnnouncementDto> searchByKeyword(String keyword);
     List<AnnouncementDto> getRecentAnnouncements();
+    void changeStatus(Long id, Status status);
+    void suspendAnnouncement(Long id);
 }

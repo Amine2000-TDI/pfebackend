@@ -4,6 +4,7 @@ import com.ezzahi.pfe_backend.dtos.AnnouncementDto;
 import com.ezzahi.pfe_backend.dtos.AppUserDto;
 import com.ezzahi.pfe_backend.exceptions.InsufficientPhotosException;
 import com.ezzahi.pfe_backend.exceptions.NotFoundException;
+import com.ezzahi.pfe_backend.exceptions.OperationNonPermittedException;
 import com.ezzahi.pfe_backend.models.Announcement;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.enums.Status;
@@ -31,20 +32,26 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public AnnouncementDto save(AnnouncementDto dto) {
         validators.validate(dto);
+        System.out.println("*********************************************start*************************************************");
+        //verifier si une modification chercher l'annonce s'il exist ou non
+        if(dto.getId() != null){
+            Announcement announcement = announcementRepository.findById(dto.getId())
+                    .orElseThrow(()-> new NotFoundException("An announcement with id " + dto.getId()  + " not found.","Announcement"));
+            dto.setCreationDate(announcement.getCreationDate());
+            announcement.getPictures().clear();
+        }else{
+            dto.setCreationDate(LocalDate.now());
+            dto.setStatus(Status.AVAILABLE);
+        }
+        //verifier s'il y a au minimum 4 images
         if(dto.getPictures().isEmpty() || dto.getPictures().size() <= 3){
             throw new InsufficientPhotosException("An announcement must have at least 4 photos.");
         }
-        if(dto.getCreationDate() == null){
-            dto.setCreationDate(LocalDate.now());
-        }
-        AppUser appUser = appUserRepository.findById(dto.getAppUser().getId())
-                .orElseThrow(() -> new NotFoundException("AppUser not found", "Candidacy save"));
-
-
-        final Announcement announcement = AnnouncementDto.toEntity(dto,appUser);
+        //préparer le dto
+        Announcement announcement = AnnouncementDto.toEntity(dto,AppUserDto.toEntity(dto.getAppUser()));
         announcement.getPictures().forEach( p -> p.setAnnouncement(announcement));
-        Announcement savedAnnouncement = announcementRepository.save(AnnouncementDto.toEntity(dto,appUser));
-        return AnnouncementDto.toDto(savedAnnouncement);
+        //enregistrer l'annonce
+        return AnnouncementDto.toDto(announcementRepository.save(AnnouncementDto.toEntity(dto,AppUserDto.toEntity(dto.getAppUser()))));
     }
 
     @Override
@@ -97,6 +104,25 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 .stream()
                 .map(AnnouncementDto::toDto)
                 .toList();
+    }
+
+    @Override
+    public void changeStatus(Long id, Status status){
+        Announcement announcement = announcementRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("An announcement with id " + id + " not found.","Announcement"));
+        if(status.equals(Status.SUSPENDED)){
+            throw new OperationNonPermittedException("You can't suspend an announcement","changeStatus","Announcement service");
+        }
+        announcement.setStatus(status);
+        announcementRepository.save(announcement);
+    }
+
+    @Override
+    public void suspendAnnouncement(Long id){
+        Announcement announcement = announcementRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("An announcement with id " + id + " not found.","Announcement"));
+        announcement.setStatus(Status.SUSPENDED);
+        announcementRepository.save(announcement);
     }
 
 }

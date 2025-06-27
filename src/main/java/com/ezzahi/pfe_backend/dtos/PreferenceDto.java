@@ -28,7 +28,7 @@ public class PreferenceDto {
     @NotNull(message = "Le champ 'aime les chats' est requis")
     private Boolean catLover;
     @NotNull(message = "Le champ 'sportif' est requis")
-    private Boolean practicinSport;
+    private Boolean practicingSport;
     @NotNull(message = "Le champ 'pratiquant religieux' est requis")
     private Boolean practicingReligious;
     @NotNull(message = "La préférence de langue arabe est requise")
@@ -48,7 +48,7 @@ public class PreferenceDto {
                 .smoker(preference.getSmoker())
                 .dogLover(preference.getDogLover())
                 .catLover(preference.getCatLover())
-                .practicinSport(preference.getPracticinSport())
+                .practicingSport(preference.getPracticingSport())
                 .practicingReligious(preference.getPracticingReligious())
                 .arabic(preference.getArabic())
                 .french(preference.getFrench())
@@ -64,7 +64,8 @@ public class PreferenceDto {
                 .smoker(preferenceDto.getSmoker())
                 .dogLover(preferenceDto.getDogLover())
                 .catLover(preferenceDto.getCatLover())
-                .practicinSport(preferenceDto.getPracticinSport())
+                .practicingSport(preferenceDto.getPracticingSport())
+                .practicingReligious(preferenceDto.getPracticingReligious())
                 .arabic(preferenceDto.getArabic())
                 .french(preferenceDto.getFrench())
                 .english(preferenceDto.getEnglish())

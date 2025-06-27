@@ -1,7 +1,9 @@
 package com.ezzahi.pfe_backend.services.impl;
 
+import com.ezzahi.pfe_backend.dtos.AppUserDto;
 import com.ezzahi.pfe_backend.dtos.PreferenceDto;
 import com.ezzahi.pfe_backend.exceptions.NotFoundException;
+import com.ezzahi.pfe_backend.exceptions.OperationNonPermittedException;
 import com.ezzahi.pfe_backend.models.AppUser;
 import com.ezzahi.pfe_backend.models.Preference;
 import com.ezzahi.pfe_backend.repositories.AppUserRepository;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,24 +29,32 @@ public class PreferenceServiceImpl implements PreferenceService {
     @Override
     public PreferenceDto save(PreferenceDto dto) {
         validator.validate(dto);
-
-        AppUser user = appUserRepository.findById(dto.getUser().getId())
-                .orElseThrow(() -> new NotFoundException("User not found with id : "+dto.getUser().getId(), "Preference save"));
-
+        // si admin on doit pas ajouter de preference
+        dto.getUser().getRoles().forEach(role -> {
+            if(role.getLibelle().equals("Admin")) {
+                throw new OperationNonPermittedException("You can't add preference to an admin","save","Preference");
+            }
+        });
+        // s'il n'a pas le role de colocataire, on ne doit pas ajouter preference
+        var isLocator = dto.getUser().getRoles().stream().filter(role -> role.getLibelle().equals("Coloc") ).findFirst();
+        if(isLocator.isEmpty()) {
+            throw new OperationNonPermittedException("You can't add preference to a owner","save","Preference");
+        }
         // Si préférence déjà existante → update
-        Preference preference = preferenceRepository.findByAppUserId(user.getId())
+        Preference preference = preferenceRepository.findByAppUserId(dto.getUser().getId())
                 .orElse(null);
 
         if (preference == null) {
             // Nouvelle préférence
-            preference = PreferenceDto.toEntity(dto, user);
+            preference = PreferenceDto.toEntity(dto, AppUserDto.toEntity(dto.getUser()));
         } else {
             // Mise à jour
+            preference.setAppUser(AppUserDto.toEntity(dto.getUser()));
             preference.setDescription(dto.getDescription());
             preference.setSmoker(dto.getSmoker());
             preference.setDogLover(dto.getDogLover());
             preference.setCatLover(dto.getCatLover());
-            preference.setPracticinSport(dto.getPracticinSport());
+            preference.setPracticingSport(dto.getPracticingSport());
             preference.setPracticingReligious(dto.getPracticingReligious());
             preference.setArabic(dto.getArabic());
             preference.setFrench(dto.getFrench());

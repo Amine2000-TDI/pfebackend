@@ -4,6 +4,7 @@ import com.ezzahi.pfe_backend.dtos.ContractDto;
 import com.ezzahi.pfe_backend.models.Contract;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ContractService extends Crudservice<Contract, ContractDto> {
     //List<ContractDto> getByUserId(Long userId);
@@ -13,6 +14,6 @@ public interface ContractService extends Crudservice<Contract, ContractDto> {
     //List<ContractDto> getCurrentContractsByUser(Long userId);
 
     List<ContractDto> getContractsByUserId(Long userId);
-    List<ContractDto> getContractsByAnnouncementId(Long announcementId);
+    Optional<ContractDto> getContractsByAnnouncementId(Long announcementId);
     boolean isUserInContract(Long contractId, Long userId);
 }

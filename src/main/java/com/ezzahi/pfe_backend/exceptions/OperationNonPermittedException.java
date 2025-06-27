@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public class OperationNonPermittedException extends RuntimeException {
-    @Getter
     private final String errorMessage;
-    @Getter
     private final String operationId;
-    @Getter
     private final String source;
 }

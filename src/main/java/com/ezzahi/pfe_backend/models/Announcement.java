@@ -3,6 +3,7 @@ package com.ezzahi.pfe_backend.models;
 import com.ezzahi.pfe_backend.models.enums.AnnonceType;
 import com.ezzahi.pfe_backend.models.enums.TypeLogement;
 import com.ezzahi.pfe_backend.models.enums.Status;
+import com.ezzahi.pfe_backend.models.enums.Ville;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,11 +34,15 @@ public class Announcement {
     private String adresse;
     private Double price;
     private LocalDate creationDate;
+    private Integer nbrPerson;
+    private Integer surface;
+    @Enumerated(EnumType.STRING)
+    private Status status;
     @Enumerated(EnumType.STRING)
     private AnnonceType annonceType;
     @Enumerated(EnumType.STRING)
     private TypeLogement typeLogement;
-    private Integer nbrPerson;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Ville ville;
+
 }

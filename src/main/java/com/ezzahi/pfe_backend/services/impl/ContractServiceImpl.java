@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,10 +88,13 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.delete(contract);
     }
     @Override
-    public List<ContractDto> getContractsByAnnouncementId(Long announcementId) {
-        return contractRepository.findByAnnouncementId(announcementId).stream()
-                .map(ContractDto::toDto)
-                .collect(Collectors.toList());
+    public Optional<ContractDto> getContractsByAnnouncementId(Long announcementId) {
+        Contract contract = contractRepository.findByAnnouncementId(announcementId).orElse(null);
+        if (contract == null) {
+            return Optional.empty();
+        }else {
+            return Optional.of(ContractDto.toDto(contract));
+        }
     }
     @Override
     public List<ContractDto> getContractsByUserId(Long userId) {

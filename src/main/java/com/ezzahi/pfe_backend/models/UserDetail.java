@@ -1,9 +1,7 @@
 package com.ezzahi.pfe_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import com.ezzahi.pfe_backend.models.enums.Gender;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,6 +20,8 @@ public class UserDetail {
     private String phone;
     private LocalDate birthday;
     private LocalDate dateVideoCall;
-    @OneToOne
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @OneToOne()
     private AppUser appUser;
 }
